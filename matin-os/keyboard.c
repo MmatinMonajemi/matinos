@@ -1,0 +1,44 @@
+#include <stdint.h>
+#include "port.h"
+
+#define VIDEO_MEMORY ((char*)0xb8000)
+
+char input_buffer[80];
+int buffer_index = 0;
+int cursor = 0;
+
+char scancode_map[128] = {
+    0, 27, '1','2','3','4','5','6','7','8','9','0','-','=', '\b',
+    '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
+    'a','s','d','f','g','h','j','k','l',';','\'','`',   0, '\\',
+    'z','x','c','v','b','n','m',',','.','/',   0, '*',  0, ' ', 0,
+    // jadval
+};
+
+void keyboard_handler() {
+    uint8_t scancode = inb(0x60);
+
+    if (scancode & 0x80) return; // Ignore key release
+
+    char c = scancode_map[scancode];
+    if (!c) return;
+
+    if (c == '\n') {
+        input_buffer[buffer_index] = 0;
+        buffer_index = 0;
+    } else if (c == '\b') {
+        if (buffer_index > 0) {
+            buffer_index--;
+            cursor -= 2;
+            VIDEO_MEMORY[cursor] = ' ';
+            VIDEO_MEMORY[cursor + 1] = 0x07;
+        }
+    } else {
+        if (buffer_index < 79) {
+            input_buffer[buffer_index++] = c;
+            VIDEO_MEMORY[cursor++] = c;
+            VIDEO_MEMORY[cursor++] = 0x07;
+        }
+    }
+}
+

@@ -1,5 +1,8 @@
-sudo apt update
-sudo apt install gcc-multilib nasm qemu
-make clean
-make all
-make run
+: Package 'qemu' has no installation candidate
+rm -f *.o *.bin kernel.bin matin-os.bin
+nasm -f bin boot.asm -o boot.bin
+boot.asm:24: error: invalid combination of opcode and operands
+make: *** [Makefile:6: boot.bin] Error 1
+nasm -f bin boot.asm -o boot.bin
+boot.asm:24: error: invalid combination of opcode and operands
+make: *** [Makefile:6: boot.bin] Error 1

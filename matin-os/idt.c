@@ -54,6 +54,6 @@ void init_idt() {
 
     struct IDTPointer idtp;
     idtp.limit = sizeof(struct IDTEntry) * IDT_SIZE - 1;
-    idtp.base = (uint32_t)&idt;
+    idtp.base = (uint32_t)(uintptr_t)&idt;
     load_idt(&idtp);
 }

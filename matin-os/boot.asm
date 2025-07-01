@@ -14,21 +14,18 @@ start:
     mov si, msg
     call print
 
-    mov si, 0  ; sector index
+    ; بارگذاری 4 سکتور (از سکتور 2 تا 5) در 0x10000
+    mov si, 0              ; sector index
 .load_loop:
-    mov ah, 0x02
-    mov al, 1
+    mov ah, 0x02           ; read sectors
+    mov al, 1              ; sectors to read
     mov ch, 0
     mov cl, 2
     add cl, si
     mov dh, 0
     mov dl, [BOOT_DRIVE]
     mov bx, 0x0000
-    ; محاسبه درست segment برای بارگذاری هر سکتور
-    mov ax, 0x1000
-    mov dx, si
-    shl dx, 5      ; dx = si * 32 (هر سکتور 512 بایت = 32 * 16)
-    add ax, dx
+    mov ax, 0x1000         ; segment = 0x1000  (0x10000 = 0x1000 << 4)
     mov es, ax
     int 0x13
     jc load_error
@@ -43,7 +40,6 @@ start:
     or eax, 1
     mov cr0, eax
 
-    ; Far JMP با selector:offset برای Protected Mode
     jmp 0x08:protected_mode
 
 load_error:
@@ -70,8 +66,8 @@ enable_a20:
 
 gdt_start:
     dq 0x0000000000000000
-    dq 0x00CF9A000000FFFF ; Code segment (base=0, limit=4GB, flags)
-    dq 0x00CF92000000FFFF ; Data segment (base=0, limit=4GB, flags)
+    dq 0x00CF9A000000FFFF
+    dq 0x00CF92000000FFFF
 gdt_end:
 
 gdt_descriptor:
@@ -98,7 +94,6 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    ; پرش به آدرس خطی کرنل (در اینجا فرض شده کرنل در 0x10000 بارگذاری شده)
-    jmp 0x10000
+    jmp 0x10000      ; پرش به کرنل که در 0x10000 بارگذاری شد
 
     jmp $

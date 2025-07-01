@@ -1,3 +1,4 @@
+# Makefile
 all:
 	nasm -f bin boot.asm -o boot.bin
 	nasm -f elf idt.asm -o idt.o

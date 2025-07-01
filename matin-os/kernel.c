@@ -1,63 +1,21 @@
-#include <stdio.h>
-#include <string.h>
+[BITS 32]
+section .text
+global _start
 
-#define MAX_INPUT 128
+_start:
+    mov si, kernel_msg
+print_char:
+    lodsb
+    cmp al, 0
+    je halt
+    mov ah, 0x0E
+    int 0x10
+    jmp print_char
 
-void print(const char* str) {
-    printf("%s", str);
-    fflush(stdout);
-}
+halt:
+    cli
+    hlt
+    jmp halt
 
-void clear_screen() {
-    // این تابع ترمینال را پاک می‌کند
-    printf("\033[2J\033[H");
-    fflush(stdout);
-}
-
-void read_input(char* buffer) {
-    if (fgets(buffer, MAX_INPUT, stdin) != NULL) {
-        // حذف '\n' انتهای خط
-        buffer[strcspn(buffer, "\n")] = 0;
-
-        // اگر ورودی بیشتر از اندازه مجاز بود، پاک‌سازی باقی‌مانده
-        if (strlen(buffer) == MAX_INPUT - 1 && buffer[MAX_INPUT-2] != '\n') {
-            int ch;
-            while ((ch = getchar()) != '\n' && ch != EOF);
-        }
-    } else {
-        buffer[0] = 0;
-    }
-}
-
-int main() {
-    char input[MAX_INPUT] = {0};
-
-    clear_screen();
-    print("Matin OS Terminal\nType 'help' for commands.\n\n> ");
-
-    while (1) {
-        read_input(input);
-
-        if (input[0] == 0) continue;
-
-        if (strcmp(input, "help") == 0) {
-            print("Commands:\nhelp\nclear\necho [text]\nexit\n\n> ");
-        } else if (strcmp(input, "clear") == 0) {
-            clear_screen();
-            print("> ");
-        } else if (strncmp(input, "echo ", 5) == 0) {
-            if(strlen(input + 5) > 0)
-                print(input + 5);
-            print("\n> ");
-        } else if (strcmp(input, "echo") == 0) {
-            print("\n> ");
-        } else if (strcmp(input, "exit") == 0) {
-            print("Bye!\n");
-            break;
-        } else {
-            print("Unknown command\n> ");
-        }
-        memset(input, 0, MAX_INPUT);
-    }
-    return 0;
-}
+section .data
+kernel_msg db "Hello from Matin kernel!", 0

@@ -44,6 +44,8 @@ void main() {
         } else {
             print("Unknown command\n> ");
         }
+        // پاک‌سازی input برای جلوگیری از تکرار دستورات قبلی
+        memset(input, 0, MAX_INPUT);
     }
 }
 
@@ -58,8 +60,10 @@ void print(const char* str) {
                 clear_screen();
             }
             int pos = (row * 80 + col) * 2;
-            video[pos] = *str;
-            video[pos + 1] = 0x07;
+            if (pos < 80 * 25 * 2) { // جلوگیری از دسترسی خارج از محدوده
+                video[pos] = *str;
+                video[pos + 1] = 0x07;
+            }
             col++;
             if (col >= 80) {
                 col = 0;
@@ -94,5 +98,6 @@ void read_input(char* buffer) {
         }
     }
     buffer[i] = 0; // تضمین تهی بودن انتها
-    input_buffer[0] = 0;
+    // پاک‌سازی input_buffer برای جلوگیری از دستور تکراری
+    memset(input_buffer, 0, MAX_INPUT);
 }

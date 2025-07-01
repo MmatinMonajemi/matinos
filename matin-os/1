@@ -1,4 +1,3 @@
-nasm -f bin boot.asm -o boot.bin
-nasm -f bin kernel.asm -o kernel.bin
-
-qemu-system-x86_64 -drive format=raw,file=boot.bin
+boot.asm:24: error: invalid combination of opcode and operands
+nasm: fatal: unable to open input file `kernel.asm' No such file or directory
+qemu-system-x86_64: -drive format=raw,file=boot.bin: Could not open 'boot.bin': No such file or directory

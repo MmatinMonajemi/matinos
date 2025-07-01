@@ -95,6 +95,6 @@ protected_mode:
     mov esp, 0x9FC00
 
     ; پرش صحیح به آدرس کرنل (0x10000:0x0)
-    jmp dword 0x10000
+    jmp 0x08:0x00010000
 
     jmp $

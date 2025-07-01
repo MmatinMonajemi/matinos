@@ -14,7 +14,7 @@ void read_input(char* buffer);
 static int row = 0, col = 0;
 
 void main() {
-    char input[MAX_INPUT] = {0}; // مقداردهی اولیه برای اطمینان
+    char input[MAX_INPUT] = {0};
 
     clear_screen();
     init_idt();
@@ -25,7 +25,6 @@ void main() {
     while (1) {
         read_input(input);
 
-        // اطمینان از بسته بودن رشته
         input[MAX_INPUT - 1] = 0;
 
         if (input[0] == 0) continue;
@@ -44,7 +43,6 @@ void main() {
         } else {
             print("Unknown command\n> ");
         }
-        // پاک‌سازی input برای جلوگیری از تکرار دستورات قبلی
         memset(input, 0, MAX_INPUT);
     }
 }
@@ -58,9 +56,10 @@ void print(const char* str) {
         } else {
             if (row >= 25) {
                 clear_screen();
+                // امن‌تر: row = 0; col = 0;
             }
             int pos = (row * 80 + col) * 2;
-            if (pos < 80 * 25 * 2) { // جلوگیری از دسترسی خارج از محدوده
+            if (pos < 80 * 25 * 2) {
                 video[pos] = *str;
                 video[pos + 1] = 0x07;
             }
@@ -85,9 +84,8 @@ void clear_screen() {
 }
 
 void read_input(char* buffer) {
-    // جلوگیری از گیرکردن در حلقه بی‌نهایت و مصرف زیاد CPU
     while (input_buffer[0] == 0) {
-        __asm__ __volatile__("hlt"); // صرفه‌جویی در مصرف CPU
+        __asm__ __volatile__("hlt");
     }
 
     int i;
@@ -97,7 +95,6 @@ void read_input(char* buffer) {
             break;
         }
     }
-    buffer[i] = 0; // تضمین تهی بودن انتها
-    // پاک‌سازی input_buffer برای جلوگیری از دستور تکراری
+    buffer[i] = 0;
     memset(input_buffer, 0, MAX_INPUT);
 }

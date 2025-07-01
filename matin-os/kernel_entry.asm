@@ -1,7 +1,7 @@
 [BITS 32]
 
 section .multiboot
-    align 4
+    align 8               ; align 8 for multiboot spec
     dd 0x1BADB002         ; magic
     dd 0x00               ; flags
     dd -(0x1BADB002+0x00) ; checksum
@@ -11,6 +11,8 @@ section .text
 
 init_pm:
     cli
+
+    ; فرض بر این است که GDT مناسب ست شده و selector 0x10 معتبر است
     mov     ax, 0x10
     mov     ds, ax
     mov     es, ax
@@ -18,6 +20,7 @@ init_pm:
     mov     gs, ax
     mov     ss, ax
 
+    ; Stack Pointer - بهتر است از فضای امن (مثلاً پایین RAM) استفاده شود:
     mov     esp, 0x9FC00
 
     sti

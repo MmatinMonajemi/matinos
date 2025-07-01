@@ -1,4 +1,11 @@
-nasm -f bin boot.asm -o boot.bin
 nasm -f elf kernel_entry.asm -o kernel_entry.o
-kernel_entry.asm:2: error: unrecognized directive [ORG]
-make: *** [Makefile:9: kernel_entry.o] Error 1
+nasm -f elf idt.asm -o idt.o
+gcc -ffreestanding -m32 -c idt.c -o idtc.o
+gcc -ffreestanding -m32 -c keyboard.c -o keyboard.o
+gcc -ffreestanding -m32 -c string.c -o string.o
+gcc -ffreestanding -m32 -c kernel.c -o kernel.o
+ld -m elf_i386 -T linker.ld -o kernel.bin kernel_entry.o idt.o idtc.o keyboard.o string.o kernel.o
+ld: warning: idt.o: missing .note.GNU-stack section implies executable stack
+ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+ld: warning: kernel.bin has a LOAD segment with RWX permissions
+cat boot.bin kernel.bin > matin-os.bin

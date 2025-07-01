@@ -7,7 +7,7 @@
 #define VIDEO_SIZE (ROWS * COLS * 2)
 #define INPUT_BUF_SIZE 128
 
-volatile char input_buffer[INPUT_BUF_SIZE];
+volatile char input_buffer[INPUT_BUF_SIZE] = {0};
 volatile int buffer_index = 0;
 volatile int cursor = 0;
 
@@ -16,10 +16,8 @@ char scancode_map[128] = {
     '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
     'a','s','d','f','g','h','j','k','l',';','\'','`',   0, '\\',
     'z','x','c','v','b','n','m',',','.','/',   0, '*',  0, ' ', 0,
-    // ادامه را با صفر مقدار دهی می‌کنیم
 };
- 
-// مقداردهی صفر به بقیه خانه‌های scancode_map
+
 void init_scancode_map() {
     for(int i = 58; i < 128; i++) {
         scancode_map[i] = 0;
@@ -40,7 +38,12 @@ void keyboard_handler() {
         for(int i = buffer_index + 1; i < INPUT_BUF_SIZE; i++)
             input_buffer[i] = 0;
         buffer_index = 0;
-        cursor = 0;
+
+        // رفتن به ابتدای خط بعدی
+        int line = cursor / (COLS * 2);
+        line++;
+        if (line >= ROWS) line = 0; // اگر به آخر صفحه رسیدیم، به اول برگردیم
+        cursor = line * COLS * 2;
     } else if (c == '\b') {
         if (buffer_index > 0 && cursor >= 2) {
             buffer_index--;
@@ -56,3 +59,6 @@ void keyboard_handler() {
         }
     }
 }
+
+// در جایی از کد اصلی، قبل از استفاده از کیبورد، حتما این تابع را یک بار صدا بزنید
+// init_scancode_map();

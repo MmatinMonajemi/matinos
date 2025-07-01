@@ -20,3 +20,7 @@ nasm -f bin boot.asm -o boot.bin
 boot.asm:35: error: symbol `init_pm' not defined
 make: *** [Makefile:6: boot.bin] Error 1
 
+bug 2 :
+nasm -f bin boot.asm -o boot.bin
+boot.asm:35: error: symbol `init_pm' not defined
+make: *** [Makefile:6: boot.bin] Error 1

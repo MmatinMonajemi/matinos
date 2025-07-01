@@ -14,7 +14,7 @@ void read_input(char* buffer);
 static int row = 0, col = 0;
 
 void main() {
-    char input[MAX_INPUT];
+    char input[MAX_INPUT] = {0}; // مقداردهی اولیه برای اطمینان
 
     clear_screen();
     init_idt();
@@ -25,7 +25,7 @@ void main() {
     while (1) {
         read_input(input);
 
-        // جلوگیری از overflow
+        // اطمینان از بسته بودن رشته
         input[MAX_INPUT - 1] = 0;
 
         if (input[0] == 0) continue;
@@ -81,7 +81,7 @@ void clear_screen() {
 }
 
 void read_input(char* buffer) {
-    // جلوگیری از گیر کردن در حلقه بی‌نهایت و مصرف زیاد CPU
+    // جلوگیری از گیرکردن در حلقه بی‌نهایت و مصرف زیاد CPU
     while (input_buffer[0] == 0) {
         __asm__ __volatile__("hlt"); // صرفه‌جویی در مصرف CPU
     }

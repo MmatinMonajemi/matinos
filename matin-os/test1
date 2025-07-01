@@ -1,8 +1,8 @@
-: Package 'qemu' has no installation candidate
-rm -f *.o *.bin kernel.bin matin-os.bin
+sudo apt update
+sudo apt install qemu-system-x86
+sudo apt install qemu qemu-kvm qemu-system qemu-utils
+mov si, BOOT_DRIVE
+mov [si], dl
+mov byte [BOOT_DRIVE], dl
+mov byte [BOOT_DRIVE], dl
 nasm -f bin boot.asm -o boot.bin
-boot.asm:24: error: invalid combination of opcode and operands
-make: *** [Makefile:6: boot.bin] Error 1
-nasm -f bin boot.asm -o boot.bin
-boot.asm:24: error: invalid combination of opcode and operands
-make: *** [Makefile:6: boot.bin] Error 1

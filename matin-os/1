@@ -1,5 +1,5 @@
-ls -l boot.bin
-xxd boot.bin | tail -n 2
-qemu-system-x86_64 -drive format=raw,file=boot.bin
-cat boot.bin kernel.bin > matin-os.bin
-qemu-system-x86_64 -drive format=raw,file=matin-os.bin
+ls: cannot access 'boot.bin': No such file or directory
+xxd: boot.bin: No such file or directory
+qemu-system-x86_64: -drive format=raw,file=boot.bin: Could not open 'boot.bin': No such file or directory
+cat: boot.bin: No such file or directory
+cat: kernel.bin: No such file or directory

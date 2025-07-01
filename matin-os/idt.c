@@ -1,3 +1,4 @@
+// idt.c
 #include <stdint.h>
 #include "port.h"
 
@@ -29,8 +30,8 @@ void remap_pic() {
     outb(0xA1, 0x02);
     outb(0x21, 0x01);
     outb(0xA1, 0x01);
-    outb(0x21, 0x0);
-    outb(0xA1, 0x0);
+    outb(0x21, 0x00);
+    outb(0xA1, 0x00);
 }
 
 void set_idt_entry(int n, uint32_t handler) {
@@ -50,4 +51,3 @@ void init_idt() {
     idtp.base = (uint32_t)&idt;
     load_idt(&idtp);
 }
-

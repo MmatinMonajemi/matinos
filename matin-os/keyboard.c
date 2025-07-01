@@ -24,6 +24,14 @@ void init_scancode_map() {
     }
 }
 
+void clear_line(int line) {
+    int start = line * COLS * 2;
+    for(int i = 0; i < COLS; i++) {
+        VIDEO_MEMORY[start + i*2] = ' ';
+        VIDEO_MEMORY[start + i*2 + 1] = 0x07;
+    }
+}
+
 void keyboard_handler() {
     uint8_t scancode = inb(0x60);
 
@@ -39,11 +47,11 @@ void keyboard_handler() {
             input_buffer[i] = 0;
         buffer_index = 0;
 
-        // رفتن به ابتدای خط بعدی
         int line = cursor / (COLS * 2);
         line++;
-        if (line >= ROWS) line = 0; // اگر به آخر صفحه رسیدیم، به اول برگردیم
+        if (line >= ROWS) line = 0;
         cursor = line * COLS * 2;
+        clear_line(line); // خط جدید را پاک کن
     } else if (c == '\b') {
         if (buffer_index > 0 && cursor >= 2) {
             buffer_index--;
@@ -57,6 +65,11 @@ void keyboard_handler() {
             VIDEO_MEMORY[cursor++] = c;
             VIDEO_MEMORY[cursor++] = 0x07;
         }
+    }
+
+    // جلوگیری از خارج شدن cursor از محدوده حافظه و wrap شدن
+    if (cursor >= VIDEO_SIZE) {
+        cursor = 0;
     }
 }
 

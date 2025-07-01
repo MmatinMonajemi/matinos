@@ -1,1 +1,19 @@
+
 ####
+
+
+
+
+nasm -f bin boot.asm -o boot.bin
+nasm -f elf kernel_entry.asm -o kernel_entry.o
+nasm -f elf idt.asm -o idt.o
+gcc -ffreestanding -m32 -c idt.c -o idtc.o
+gcc -ffreestanding -m32 -c keyboard.c -o keyboard.o
+gcc -ffreestanding -m32 -c kernel.c -o kernel.o
+In file included from kernel.c:2:
+/usr/include/string.h:26:10: fatal error: bits/libc-header-start.h: No such file or directory
+   26 | #include <bits/libc-header-start.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make: *** [Makefile:15: kernel.o] Error 1
+

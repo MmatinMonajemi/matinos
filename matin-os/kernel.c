@@ -1,3 +1,4 @@
+// kernel.c
 #include <stdint.h>
 #include <string.h>
 
@@ -11,7 +12,6 @@ void print(const char* str);
 void clear_screen();
 void read_input(char* buffer);
 
-// 
 static int row = 0, col = 0;
 
 void main() {
@@ -53,7 +53,7 @@ void print(const char* str) {
             row++;
             col = 0;
         } else {
-            if (row >= 25) { // 
+            if (row >= 25) {
                 clear_screen();
             }
             int pos = (row * 80 + col) * 2;
@@ -72,18 +72,3 @@ void print(const char* str) {
 void clear_screen() {
     char* video = VIDEO_MEMORY;
     for (int i = 0; i < 80 * 25 * 2; i += 2) {
-        video[i] = ' ';
-        video[i + 1] = 0x07;
-    }
-    row = 0; // 
-    col = 0;
-}
-
-void read_input(char* buffer) {
-    while (input_buffer[0] == 0);
-    for (int i = 0; i < MAX_INPUT; i++) {
-        buffer[i] = input_buffer[i];
-        if (input_buffer[i] == 0) break;
-    }
-    input_buffer[0] = 0;
-}

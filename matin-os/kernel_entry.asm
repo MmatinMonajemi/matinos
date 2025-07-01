@@ -1,17 +1,24 @@
 [BITS 32]
 
-global init_pm
+section .multiboot
+    align 4
+    dd 0x1BADB002         ; magic
+    dd 0x00               ; flags
+    dd -(0x1BADB002+0x00) ; checksum
+
+section .text
+    global init_pm
 
 init_pm:
     cli
-    mov     ax, 0x10         ; Data segment selector (باید با GDT هماهنگ باشد)
+    mov     ax, 0x10
     mov     ds, ax
     mov     es, ax
     mov     fs, ax
     mov     gs, ax
     mov     ss, ax
 
-    mov     esp, 0x9FC00     ; Stack pointer (مطمئن شوید این آدرس آزاد است)
+    mov     esp, 0x9FC00
 
     sti
 

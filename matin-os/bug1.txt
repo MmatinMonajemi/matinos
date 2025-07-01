@@ -1,1 +1,1 @@
-qemu-system-i386 -drive format=raw,file=matin-os.bin -s -S
+qemu-system-i386 -drive format=raw,file=matin-os.bin -serial stdio

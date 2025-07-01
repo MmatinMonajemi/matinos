@@ -14,27 +14,34 @@ start:
     mov si, msg
     call print
 
-    ; Load kernel (4 sectors) from disk to 0x1000:0
-    mov ah, 0x02         ; BIOS read sectors
-    mov al, 4            ; Number of sectors
-    mov ch, 0            ; Cylinder
-    mov cl, 2            ; Sector (starts from 1)
-    mov dh, 0            ; Head
-    mov dl, [BOOT_DRIVE] ; Drive
-    mov bx, 0x1000       ; Buffer offset
+    mov si, 0  ; sector index
+.load_loop:
+    mov ah, 0x02
+    mov al, 1              ; Read 1 sector each time
+    mov ch, 0
+    mov cl, 2
+    add cl, si             ; sector = 2 + si
+    mov dh, 0
+    mov dl, [BOOT_DRIVE]
+    mov bx, 0              ; offset (0)
+    mov ax, 0x1000
+    add ax, si*0x20        ; 0x20=512/16 (segment adjustment for each sector)
+    mov es, ax
     int 0x13
     jc load_error
+    inc si
+    cmp si, 4
+    jl .load_loop
 
     lgdt [gdt_descriptor]
 
-    ; Enable A20 (اختیاری، بستگی به سخت‌افزار دارد)
     call enable_a20
 
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
-    jmp CODE_SEG:protected_mode
+    jmp 0x08:protected_mode
 
 load_error:
     mov si, err_msg
@@ -52,7 +59,6 @@ print:
 .done:
     ret
 
-; --- Optional: Enable A20 line ---
 enable_a20:
     in   al, 0x92
     or   al, 2
@@ -90,7 +96,6 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    ; پرش به کرنل در صورت وجود
-    ; jmp 0x1000:0 ; اگر کرنل اینجاست
+    jmp 0x1000:0   ; پرش به کرنل
 
     jmp $

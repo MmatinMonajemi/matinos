@@ -32,7 +32,7 @@ start:
     or eax, 1
     mov cr0, eax
 
-    jmp CODE_SEG:init_pm
+    jmp 0x08:init_pm      ; برچسب init_pm باید در کرنل وجود داشته باشد!
 
 load_error:
     mov si, err_msg

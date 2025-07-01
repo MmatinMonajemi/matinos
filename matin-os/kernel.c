@@ -1,3 +1,4 @@
+// kernel.c
 #include <stdint.h>
 #include <string.h>
 
@@ -16,7 +17,7 @@ void main() {
 
     clear_screen();
     init_idt();
-    __asm__ __volatile__("sti"); // faalsazi vaghfe
+    __asm__ __volatile__("sti");
 
     print("Matin OS Terminal\nType 'help' for commands.\n\n> ");
 
@@ -77,4 +78,3 @@ void read_input(char* buffer) {
     }
     input_buffer[0] = 0;
 }
-

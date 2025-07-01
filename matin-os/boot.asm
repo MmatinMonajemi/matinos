@@ -32,7 +32,7 @@ start:
     or eax, 1
     mov cr0, eax
 
-    jmp 0x08:init_pm
+    jmp 0x08:protected_mode
 
 load_error:
     mov si, err_msg
@@ -70,3 +70,16 @@ DATA_SEG equ 0x10
 
 times 510 - ($-$$) db 0
 dw 0xAA55
+
+[BITS 32]
+protected_mode:
+    mov ax, DATA_SEG
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    mov esp, 0x9FC00
+    ; ادامه‌ی راه‌اندازی Protected Mode یا پرش به کرنل...
+    ; برای جلوگیری از قفل شدن، یک حلقه بی‌نهایت:
+    jmp $

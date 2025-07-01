@@ -10,7 +10,6 @@ Matin OS is a simple, terminal-based operating system written in Assembly and C,
 - Minimal C-based kernel
 - Custom text output to video memory (`0xB8000`)
 - QEMU-compatible for testing and development
-- Terminal-style shell interface (coming soon!)
 
 ## Getting Started
 

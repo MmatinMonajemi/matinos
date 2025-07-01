@@ -4,21 +4,26 @@ SECTIONS
 {
   . = 0x1000;
 
-  .text : {
+  .text ALIGN(4K) : {
+    *(.multiboot)     /* برای bootloader مثل GRUB */
     *(.text)
+    *(.text.*)
   }
 
-  .rodata : {
-    *(.rodata*)
+  .rodata ALIGN(4K) : {
+    *(.rodata)
+    *(.rodata.*)
   }
 
-  .data : {
+  .data ALIGN(4K) : {
     *(.data)
+    *(.data.*)
   }
 
-  .bss : {
+  .bss ALIGN(4K) (NOLOAD) : {
     _bss_start = .;
     *(.bss)
+    *(.bss.*)
     *(COMMON)
     _bss_end = .;
   }

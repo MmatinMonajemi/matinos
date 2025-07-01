@@ -17,15 +17,15 @@ start:
     mov si, 0  ; sector index
 .load_loop:
     mov ah, 0x02
-    mov al, 1              ; Read 1 sector each time
+    mov al, 1
     mov ch, 0
     mov cl, 2
-    add cl, si             ; sector = 2 + si
+    add cl, si
     mov dh, 0
     mov dl, [BOOT_DRIVE]
-    mov bx, 0              ; offset (0)
+    mov bx, 0x0000
     mov ax, 0x1000
-    add ax, si*0x20        ; 0x20=512/16 (segment adjustment for each sector)
+    add ax, si*0x20
     mov es, ax
     int 0x13
     jc load_error
@@ -34,13 +34,13 @@ start:
     jl .load_loop
 
     lgdt [gdt_descriptor]
-
     call enable_a20
 
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
+    ; Far JMP with selector:offset for protected mode
     jmp 0x08:protected_mode
 
 load_error:
@@ -67,16 +67,15 @@ enable_a20:
 
 gdt_start:
     dq 0x0000000000000000
-    dq 0x00CF9A000000FFFF ; Code segment
-    dq 0x00CF92000000FFFF ; Data segment
+    dq 0x00CF9A000000FFFF ; Code segment (base=0, limit=4GB, flags)
+    dq 0x00CF92000000FFFF ; Data segment (base=0, limit=4GB, flags)
 gdt_end:
 
 gdt_descriptor:
-    dw gdt_end - gdt_start -1
+    dw gdt_end - gdt_start - 1
     dd gdt_start
 
 BOOT_DRIVE db 0
-
 msg db "Booting Matin OS in Protected Mode...\r\n", 0
 err_msg db "Error loading kernel!", 0
 
@@ -96,6 +95,7 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    jmp 0x1000:0   ; پرش به کرنل
+    ; پرش به آدرس خطی کرنل (در اینجا فرض شده کرنل در 0x10000 بارگذاری شده)
+    jmp 0x10000
 
     jmp $

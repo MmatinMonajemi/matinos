@@ -24,8 +24,11 @@ start:
     mov dh, 0
     mov dl, [BOOT_DRIVE]
     mov bx, 0x0000
+    ; محاسبه درست segment برای بارگذاری هر سکتور
     mov ax, 0x1000
-    add ax, si*0x20
+    mov dx, si
+    shl dx, 5      ; dx = si * 32 (هر سکتور 512 بایت = 32 * 16)
+    add ax, dx
     mov es, ax
     int 0x13
     jc load_error
@@ -40,7 +43,7 @@ start:
     or eax, 1
     mov cr0, eax
 
-    ; Far JMP with selector:offset for protected mode
+    ; Far JMP با selector:offset برای Protected Mode
     jmp 0x08:protected_mode
 
 load_error:

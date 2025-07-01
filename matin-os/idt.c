@@ -33,12 +33,15 @@ void remap_pic() {
     outb(0xA1, 0x00);
 }
 
-void set_idt_entry(int n, uint32_t handler) {
-    idt[n].offset_low = handler & 0xFFFF;
+#include <stddef.h> // برای uintptr_t
+
+void set_idt_entry(int n, void (*handler)()) {
+    uintptr_t addr = (uintptr_t)handler;
+    idt[n].offset_low = addr & 0xFFFF;
     idt[n].selector = 0x08;
     idt[n].zero = 0;
     idt[n].type_attr = 0x8E;
-    idt[n].offset_high = (handler >> 16) & 0xFFFF;
+    idt[n].offset_high = (addr >> 16) & 0xFFFF;
 }
 
 void init_idt() {
@@ -52,7 +55,7 @@ void init_idt() {
         idt[i].type_attr = 0;
     }
 
-    set_idt_entry(0x21, (uint32_t)irq1_handler);
+    set_idt_entry(0x21, irq1_handler);
 
     struct IDTPointer idtp;
     idtp.limit = sizeof(struct IDTEntry) * IDT_SIZE - 1;

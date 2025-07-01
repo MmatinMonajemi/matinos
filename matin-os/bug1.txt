@@ -1,1 +1,4 @@
-qemu-system-i386 -drive format=raw,file=matin-os.bin -serial stdio
+nasm -f bin boot.asm -o boot.bin
+nasm -f elf kernel_entry.asm -o kernel_entry.o
+kernel_entry.asm:2: error: unrecognized directive [ORG]
+make: *** [Makefile:9: kernel_entry.o] Error 1

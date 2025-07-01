@@ -1,10 +1,11 @@
-// keyboard.c
 #include <stdint.h>
 #include "port.h"
 
 #define VIDEO_MEMORY ((char*)0xb8000)
 
-char input_buffer[80];
+#define INPUT_BUF_SIZE 128
+
+char input_buffer[INPUT_BUF_SIZE];
 int buffer_index = 0;
 int cursor = 0;
 
@@ -26,6 +27,7 @@ void keyboard_handler() {
     if (c == '\n') {
         input_buffer[buffer_index] = 0;
         buffer_index = 0;
+        cursor = 0;
     } else if (c == '\b') {
         if (buffer_index > 0) {
             buffer_index--;
@@ -34,11 +36,10 @@ void keyboard_handler() {
             VIDEO_MEMORY[cursor + 1] = 0x07;
         }
     } else {
-        if (buffer_index < 79) {
+        if (buffer_index < INPUT_BUF_SIZE - 1) {
             input_buffer[buffer_index++] = c;
             VIDEO_MEMORY[cursor++] = c;
             VIDEO_MEMORY[cursor++] = 0x07;
         }
     }
 }
- 

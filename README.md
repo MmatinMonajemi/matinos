@@ -1,4 +1,4 @@
-# matinos
+# matin os
 Matin OS - Simple Operation Sysytem For Fun!  Created By M.Matin Monajemi With C &amp; Assembly &amp; Love!
 # Matin OS
 
@@ -19,7 +19,7 @@ Matin OS is a simple, terminal-based operating system written in Assembly and C,
 - Ubuntu (or any Linux distro)
 - `nasm`, `gcc`, `ld`, and `qemu`
 
-### 🛠 Build & Run
+### 🛠 Build & Run 
 
 ```bash
 git clone https://github.com/mmatinmonajemi/matinos
@@ -30,5 +30,6 @@ boot.asm     # Bootloader (Assembly)
 kernel.c     # Simple kernel (C)
 linker.ld    # Linker script
 Makefile     # Build automation
-For Test Use This :
+For Test Use This (Recommend For V.1 (Test) :
+nasm -f bin boot.asm -o boot.bin
 qemu-system-x86_64 -drive format=raw,file=boot.bin

@@ -1,4 +1,1 @@
-nasm -f bin boot.asm -o boot.bin
-nasm -f bin kernel.asm -o kernel.bin
-cat boot.bin kernel.bin > matin-os.bin
-qemu-system-x86_64 -drive format=raw,file=matin-os.bin
+boot.asm:88: error: symbol `start_kernel' not defined

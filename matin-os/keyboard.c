@@ -1,3 +1,4 @@
+// keyboard.c
 #include <stdint.h>
 #include "port.h"
 
@@ -12,13 +13,12 @@ char scancode_map[128] = {
     '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
     'a','s','d','f','g','h','j','k','l',';','\'','`',   0, '\\',
     'z','x','c','v','b','n','m',',','.','/',   0, '*',  0, ' ', 0,
-    // jadval
 };
 
 void keyboard_handler() {
     uint8_t scancode = inb(0x60);
 
-    if (scancode & 0x80) return; // Ignore key release
+    if (scancode & 0x80) return;
 
     char c = scancode_map[scancode];
     if (!c) return;
@@ -41,4 +41,3 @@ void keyboard_handler() {
         }
     }
 }
-

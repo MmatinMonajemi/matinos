@@ -41,6 +41,7 @@ start:
     mov cr0, eax
 
     jmp 0x08:protected_mode
+    nop                   ; توصیه برای flush کردن pipeline بعد از تغییر حالت
 
 load_error:
     mov si, err_msg

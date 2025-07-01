@@ -1,8 +1,59 @@
-sudo apt update
-sudo apt install qemu-system-x86
-sudo apt install qemu qemu-kvm qemu-system qemu-utils
-mov si, BOOT_DRIVE
-mov [si], dl
-mov byte [BOOT_DRIVE], dl
-mov byte [BOOT_DRIVE], dl
-nasm -f bin boot.asm -o boot.bin
+Note, selecting 'qemu-system-x86' instead of 'qemu-kvm'
+Package qemu is not available, but is referred to by another package.
+This may mean that the package is missing, has been obsoleted, or
+is only available from another source
+
+E: Package 'qemu' has no installation candidate
+Command 'mov' not found, did you mean:
+  command 'mob' from snap mob-sh (4.2.0)
+  command 'mpv' from snap mpv (0.40.0)
+  command 'mmv' from deb mmv (2.5.1-1)
+  command 'mcv' from deb scotch (7.0.4-1)
+  command 'mev' from deb gpm (1.20.7-10build1)
+  command 'mpv' from deb mpv (0.37.0-1ubuntu1)
+  command 'mog' from deb mazeofgalious (0.62.dfsg2-4.1)
+  command 'moc' from deb qtchooser (66-2build1)
+  command 'mod' from deb monodoc-base (6.8.0.105+dfsg-3.5ubuntu1)
+  command 'mv' from deb coreutils (9.4-2ubuntu2)
+  command 'mon' from deb mon (1.3.8-1)
+See 'snap info <snapname>' for additional versions.
+Command 'mov' not found, did you mean:
+  command 'mpv' from snap mpv (0.40.0)
+  command 'mob' from snap mob-sh (4.2.0)
+  command 'mcv' from deb scotch (7.0.4-1)
+  command 'mv' from deb coreutils (9.4-2ubuntu2)
+  command 'mod' from deb monodoc-base (6.8.0.105+dfsg-3.5ubuntu1)
+  command 'mev' from deb gpm (1.20.7-10build1)
+  command 'mon' from deb mon (1.3.8-1)
+  command 'mmv' from deb mmv (2.5.1-1)
+  command 'moc' from deb qtchooser (66-2build1)
+  command 'mog' from deb mazeofgalious (0.62.dfsg2-4.1)
+  command 'mpv' from deb mpv (0.37.0-1ubuntu1)
+See 'snap info <snapname>' for additional versions.
+Command 'mov' not found, did you mean:
+  command 'mob' from snap mob-sh (4.2.0)
+  command 'mpv' from snap mpv (0.40.0)
+  command 'moc' from deb qtchooser (66-2build1)
+  command 'mpv' from deb mpv (0.37.0-1ubuntu1)
+  command 'mod' from deb monodoc-base (6.8.0.105+dfsg-3.5ubuntu1)
+  command 'mv' from deb coreutils (9.4-2ubuntu2)
+  command 'mmv' from deb mmv (2.5.1-1)
+  command 'mcv' from deb scotch (7.0.4-1)
+  command 'mon' from deb mon (1.3.8-1)
+  command 'mog' from deb mazeofgalious (0.62.dfsg2-4.1)
+  command 'mev' from deb gpm (1.20.7-10build1)
+See 'snap info <snapname>' for additional versions.
+Command 'mov' not found, did you mean:
+  command 'mpv' from snap mpv (0.40.0)
+  command 'mob' from snap mob-sh (4.2.0)
+  command 'mmv' from deb mmv (2.5.1-1)
+  command 'mcv' from deb scotch (7.0.4-1)
+  command 'mpv' from deb mpv (0.37.0-1ubuntu1)
+  command 'mod' from deb monodoc-base (6.8.0.105+dfsg-3.5ubuntu1)
+  command 'mog' from deb mazeofgalious (0.62.dfsg2-4.1)
+  command 'mev' from deb gpm (1.20.7-10build1)
+  command 'mv' from deb coreutils (9.4-2ubuntu2)
+  command 'moc' from deb qtchooser (66-2build1)
+  command 'mon' from deb mon (1.3.8-1)
+See 'snap info <snapname>' for additional versions.
+boot.asm:24: error: invalid combination of opcode and operands

@@ -25,10 +25,10 @@ void main() {
     while (1) {
         read_input(input);
 
-        if (input[0] == 0) continue;
-
         // جلوگیری از overflow
         input[MAX_INPUT - 1] = 0;
+
+        if (input[0] == 0) continue;
 
         if (strcmp(input, "help") == 0) {
             print("Commands:\nhelp\nclear\necho [text]\nexit\n\n> ");
@@ -49,7 +49,6 @@ void main() {
 
 void print(const char* str) {
     char* video = VIDEO_MEMORY;
-
     while (*str) {
         if (*str == '\n') {
             row++;
@@ -82,8 +81,10 @@ void clear_screen() {
 }
 
 void read_input(char* buffer) {
-    // جلوگیری از گیر کردن در حلقه بی‌نهایت
-    while (input_buffer[0] == 0);
+    // جلوگیری از گیر کردن در حلقه بی‌نهایت و مصرف زیاد CPU
+    while (input_buffer[0] == 0) {
+        __asm__ __volatile__("hlt"); // صرفه‌جویی در مصرف CPU
+    }
 
     int i;
     for (i = 0; i < MAX_INPUT - 1; i++) {

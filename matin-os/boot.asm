@@ -11,42 +11,27 @@ start:
 
     mov [boot_drive], dl
 
-    ; پیام به صفحه
-    mov si, msg
-    call print
-
-    ; بارگذاری 4 سکتور (سکتور 2 تا 5) در 0x1000:0x0000 (آدرس فیزیکی 0x10000)
-    mov si, 0
-
-load_loop:
-    mov ah, 0x02        ; خواندن سکتور
-    mov al, 1           ; تعداد سکتورها = 1
-    mov ch, 0           ; سیلندر 0
+    ; بارگذاری 1 سکتور کرنل از سکتور 2 به آدرس 0x1000:0x0000
+    mov ah, 0x02
+    mov al, 1
+    mov ch, 0
     mov cl, 2
-    add cl, si          ; سکتور 2 + si
-    mov dh, 0           ; هد 0
+    mov dh, 0
     mov dl, [boot_drive]
     mov bx, 0x0000
-    mov ax, 0x1000      ; segment 0x1000 = آدرس 0x10000
+    mov ax, 0x1000
     mov es, ax
     int 0x13
     jc load_error
 
-    inc si
-    cmp si, 4
-    jl load_loop
-
-    ; آماده‌سازی GDT و ورود به حالت محافظت‌شده
     lgdt [gdt_descriptor]
     call enable_a20
     cli
 
-    ; فعال کردن حالت محافظت‌شده
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
-    ; پرش به کد 32 بیت
     jmp CODE_SEG:protected_mode
 
 load_error:
@@ -85,10 +70,8 @@ gdt_descriptor:
 
 boot_drive db 0
 
-msg db "Booting Matin OS...\r\n", 0
 err_msg db "Error loading kernel!", 0
 
-; پد کردن سکتور بوت تا 512 بایت
 times 510 - ($ - $$) db 0
 dw 0xAA55
 
@@ -102,10 +85,7 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    ; پرش به کرنل اصلی در 0x10000:0x0 (kernel.bin)
-    jmp 0x08:0x00000000
-
-    jmp $
+    jmp 0x08:start_kernel
 
 CODE_SEG equ 0x08
 DATA_SEG equ 0x10

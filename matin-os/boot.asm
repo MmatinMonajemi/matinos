@@ -24,7 +24,8 @@ start:
     int 0x13
     jc load_error
 
-    cli
+    ; فقط یک cli کافی است
+    ; cli
 
     lgdt [gdt_descriptor]
 
@@ -80,6 +81,5 @@ protected_mode:
     mov gs, ax
     mov ss, ax
     mov esp, 0x9FC00
-    ; ادامه‌ی راه‌اندازی Protected Mode یا پرش به کرنل...
-    ; برای جلوگیری از قفل شدن، یک حلقه بی‌نهایت:
+    ; ادامه راه‌اندازی Protected Mode یا پرش به کرنل...
     jmp $

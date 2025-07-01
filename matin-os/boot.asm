@@ -14,26 +14,27 @@ start:
     mov si, msg
     call print
 
-    mov ah, 0x02
-    mov al, 4           
-    mov ch, 0
-    mov cl, 2
-    mov dh, 0
-    mov dl, [BOOT_DRIVE]
-    mov bx, 0x1000
+    ; Load kernel (4 sectors) from disk to 0x1000:0
+    mov ah, 0x02         ; BIOS read sectors
+    mov al, 4            ; Number of sectors
+    mov ch, 0            ; Cylinder
+    mov cl, 2            ; Sector (starts from 1)
+    mov dh, 0            ; Head
+    mov dl, [BOOT_DRIVE] ; Drive
+    mov bx, 0x1000       ; Buffer offset
     int 0x13
     jc load_error
 
-    ; فقط یک cli کافی است
-    ; cli
-
     lgdt [gdt_descriptor]
+
+    ; Enable A20 (اختیاری، بستگی به سخت‌افزار دارد)
+    call enable_a20
 
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
-    jmp 0x08:protected_mode
+    jmp CODE_SEG:protected_mode
 
 load_error:
     mov si, err_msg
@@ -51,10 +52,17 @@ print:
 .done:
     ret
 
+; --- Optional: Enable A20 line ---
+enable_a20:
+    in   al, 0x92
+    or   al, 2
+    out  0x92, al
+    ret
+
 gdt_start:
     dq 0x0000000000000000
-    dq 0x00CF9A000000FFFF
-    dq 0x00CF92000000FFFF
+    dq 0x00CF9A000000FFFF ; Code segment
+    dq 0x00CF92000000FFFF ; Data segment
 gdt_end:
 
 gdt_descriptor:
@@ -81,5 +89,8 @@ protected_mode:
     mov gs, ax
     mov ss, ax
     mov esp, 0x9FC00
-    ; ادامه راه‌اندازی Protected Mode یا پرش به کرنل...
+
+    ; پرش به کرنل در صورت وجود
+    ; jmp 0x1000:0 ; اگر کرنل اینجاست
+
     jmp $

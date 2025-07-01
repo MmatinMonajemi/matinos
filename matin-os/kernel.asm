@@ -18,4 +18,4 @@ halt:
     jmp halt
 
 section .data
-kernel_msg db "Hello from kernel!", 0
+kernel_msg db "Hello from Matin kernel!", 0

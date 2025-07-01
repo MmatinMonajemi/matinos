@@ -36,12 +36,11 @@ start:
     lgdt [gdt_descriptor]
     call enable_a20
 
-    mov eax, cr0          ; این خط باید بعد از [BITS 32] اجرا شود، پس باید جابجا شود
+    mov eax, cr0
     or eax, 1
     mov cr0, eax
 
     jmp 0x08:protected_mode
-    nop
 
 load_error:
     mov si, err_msg

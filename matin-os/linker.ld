@@ -21,11 +21,11 @@ SECTIONS
   }
 
   .bss ALIGN(4096) (NOLOAD) : {
-    _bss_start = .;
+    PROVIDE(_bss_start = .);
     *(.bss)
     *(.bss.*)
     *(COMMON)
-    _bss_end = .;
+    PROVIDE(_bss_end = .);
   }
 
   /DISCARD/ : {

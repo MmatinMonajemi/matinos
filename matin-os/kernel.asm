@@ -1,21 +1,37 @@
 [BITS 32]
-section .text
-global _start
+ORG 0x0000
 
-_start:
-    mov si, kernel_msg
-print_char:
+start_kernel:
+    ; تنظیم VGA متنی
+    mov ax, 0xB800
+    mov ds, ax
+
+    ; پاک کردن صفحه
+    mov edi, 0
+    mov ecx, 80*25
+    mov al, ' '
+    mov ah, 0x07
+.clear_loop:
+    mov [edi*2], al
+    mov [edi*2+1], ah
+    inc edi
+    loop .clear_loop
+
+    ; نمایش پیام در خط اول (خانه اول)
+    mov esi, msg
+    mov edi, 0
+
+.print_loop:
     lodsb
     cmp al, 0
-    je halt
-    mov ah, 0x0E
-    int 0x10
-    jmp print_char
+    je .done
+    mov [edi*2], al
+    mov byte [edi*2+1], 0x0F   ; رنگ سفید روی پس‌زمینه سیاه
+    inc edi
+    jmp .print_loop
 
-halt:
-    cli
-    hlt
-    jmp halt
+.done:
+    ; ساده‌ترین ترمینال: فقط انتظار بی‌نهایت (loop)
+    jmp $
 
-section .data
-kernel_msg db "Hello from Matin kernel!", 0
+msg db "Welcome to Matin OS", 0

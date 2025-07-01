@@ -45,6 +45,8 @@ start:
 load_error:
     mov si, err_msg
     call print
+    cli
+    hlt
     jmp $
 
 print:

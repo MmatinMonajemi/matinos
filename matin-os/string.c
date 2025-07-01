@@ -22,14 +22,14 @@ size_t strlen(const char* str) {
 }
 
 void* memset(void* dest, int val, size_t len) {
-    unsigned char* ptr = dest;
+    unsigned char* ptr = (unsigned char*)dest;
     while (len--) *ptr++ = (unsigned char)val;
     return dest;
 }
 
 void* memcpy(void* dest, const void* src, size_t len) {
-    char* d = dest;
-    const char* s = src;
+    unsigned char* d = (unsigned char*)dest;
+    const unsigned char* s = (const unsigned char*)src;
     while (len--) *d++ = *s++;
     return dest;
 }

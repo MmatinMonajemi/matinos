@@ -11,7 +11,6 @@ void print(const char* str);
 void clear_screen();
 void read_input(char* buffer);
 
-// 
 static int row = 0, col = 0;
 
 void main() {
@@ -27,6 +26,9 @@ void main() {
         read_input(input);
 
         if (input[0] == 0) continue;
+
+        // جلوگیری از overflow و پاک‌سازی مطمئن
+        input[MAX_INPUT-1] = 0;
 
         if (strcmp(input, "help") == 0) {
             print("Commands:\nhelp\nclear\necho [text]\nexit\n\n> ");
@@ -53,7 +55,7 @@ void print(const char* str) {
             row++;
             col = 0;
         } else {
-            if (row >= 25) { // 
+            if (row >= 25) {
                 clear_screen();
             }
             int pos = (row * 80 + col) * 2;
@@ -75,15 +77,21 @@ void clear_screen() {
         video[i] = ' ';
         video[i + 1] = 0x07;
     }
-    row = 0; // 
+    row = 0;
     col = 0;
 }
 
 void read_input(char* buffer) {
+    // جلوگیری از گیر کردن در حلقه بی‌نهایت
     while (input_buffer[0] == 0);
-    for (int i = 0; i < MAX_INPUT; i++) {
+
+    for (int i = 0; i < MAX_INPUT - 1; i++) {
         buffer[i] = input_buffer[i];
-        if (input_buffer[i] == 0) break;
+        if (input_buffer[i] == 0) {
+            buffer[i] = 0;
+            break;
+        }
     }
+    buffer[MAX_INPUT-1] = 0; // اطمینان از تهی بودن انتها
     input_buffer[0] = 0;
 }

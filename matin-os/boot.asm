@@ -15,15 +15,17 @@ start:
     mov si, msg
     call print
 
-    mov bx, 0x1000
-    mov dh, 0
+    mov ah, 0x02
+    mov al, 1
     mov ch, 0
     mov cl, 2
-    mov al, 1
+    mov dh, 0
     mov dl, [BOOT_DRIVE]
-    mov ah, 0x02
+    mov bx, 0x1000
     int 0x13
     jc load_error
+
+    cli
 
     lgdt [gdt_descriptor]
 
@@ -48,21 +50,6 @@ print:
     jmp .next_char
 .done:
     ret
-
-[BITS 32]
-init_pm:
-    mov ax, DATA_SEG
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    mov esp, 0x90000
-
-    call 0x1000
-
-.hang:
-    jmp .hang
 
 gdt_start:
     dq 0x0000000000000000

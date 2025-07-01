@@ -11,17 +11,17 @@ volatile char input_buffer[INPUT_BUF_SIZE] = {0};
 volatile int buffer_index = 0;
 volatile int cursor = 0;
 
-char scancode_map[128] = {
-    0, 27, '1','2','3','4','5','6','7','8','9','0','-','=', '\b',
-    '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
-    'a','s','d','f','g','h','j','k','l',';','\'','`',   0, '\\',
-    'z','x','c','v','b','n','m',',','.','/',   0, '*',  0, ' ', 0,
-};
+char scancode_map[128] = {0};
 
 void init_scancode_map() {
-    for(int i = 58; i < 128; i++) {
-        scancode_map[i] = 0;
-    }
+    char temp_map[60] = {
+        0, 27, '1','2','3','4','5','6','7','8','9','0','-','=', '\b',
+        '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n', 0,
+        'a','s','d','f','g','h','j','k','l',';','\'','`',   0, '\\',
+        'z','x','c','v','b','n','m',',','.','/',   0, '*',  0, ' ', 0,
+    };
+    for(int i=0;i<60;i++) scancode_map[i]=temp_map[i];
+    for(int i=60;i<128;i++) scancode_map[i]=0;
 }
 
 void clear_line(int line) {
@@ -56,22 +56,20 @@ void keyboard_handler() {
         if (buffer_index > 0 && cursor >= 2) {
             buffer_index--;
             cursor -= 2;
-            VIDEO_MEMORY[cursor] = ' ';
-            VIDEO_MEMORY[cursor + 1] = 0x07;
+            if (cursor < VIDEO_SIZE - 1) { // جلوگیری از خارج شدن
+                VIDEO_MEMORY[cursor] = ' ';
+                VIDEO_MEMORY[cursor + 1] = 0x07;
+            }
         }
     } else if (c >= 32 && c <= 126) { // فقط کاراکترهای قابل نمایش
         if (buffer_index < INPUT_BUF_SIZE - 1 && cursor < VIDEO_SIZE - 2) {
             input_buffer[buffer_index++] = c;
-            VIDEO_MEMORY[cursor++] = c;
-            VIDEO_MEMORY[cursor++] = 0x07;
+            if (cursor < VIDEO_SIZE - 1) {
+                VIDEO_MEMORY[cursor++] = c;
+                VIDEO_MEMORY[cursor++] = 0x07;
+            }
         }
     }
 
-    // جلوگیری از خارج شدن cursor از محدوده حافظه و wrap شدن
-    if (cursor >= VIDEO_SIZE) {
-        cursor = 0;
-    }
-}
-
-// در جایی از کد اصلی، قبل از استفاده از کیبورد، حتما این تابع را یک بار صدا بزنید
-// init_scancode_map();
+    //*
+

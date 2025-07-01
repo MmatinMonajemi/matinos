@@ -15,7 +15,7 @@ struct IDTPointer {
 } __attribute__((packed));
 
 extern void load_idt(struct IDTPointer* idt_ptr);
-extern void irq1_handler();
+extern void irq1_handler(void);
 
 #define IDT_SIZE 256
 struct IDTEntry idt[IDT_SIZE];
@@ -33,9 +33,7 @@ void remap_pic() {
     outb(0xA1, 0x00);
 }
 
-#include <stddef.h> // برای uintptr_t
-
-void set_idt_entry(int n, void (*handler)()) {
+void set_idt_entry(int n, void (*handler)(void)) {
     uintptr_t addr = (uintptr_t)handler;
     idt[n].offset_low = addr & 0xFFFF;
     idt[n].selector = 0x08;

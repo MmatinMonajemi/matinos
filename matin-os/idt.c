@@ -1,4 +1,3 @@
-// idt.c
 #include <stdint.h>
 #include "port.h"
 
@@ -44,6 +43,15 @@ void set_idt_entry(int n, uint32_t handler) {
 
 void init_idt() {
     remap_pic();
+
+    for (int i = 0; i < IDT_SIZE; i++) {
+        idt[i].offset_low = 0;
+        idt[i].offset_high = 0;
+        idt[i].selector = 0;
+        idt[i].zero = 0;
+        idt[i].type_attr = 0;
+    }
+
     set_idt_entry(0x21, (uint32_t)irq1_handler);
 
     struct IDTPointer idtp;

@@ -41,6 +41,8 @@ void keyboard_handler() {
     if (!c) return;
 
     if (c == '\n') {
+        if (buffer_index < INPUT_BUF_SIZE - 1)
+            input_buffer[buffer_index++] = '\n'; // اضافه کردن Enter به بافر
         if (buffer_index < INPUT_BUF_SIZE)
             input_buffer[buffer_index] = 0;
         for(int i = buffer_index + 1; i < INPUT_BUF_SIZE; i++)
@@ -51,25 +53,17 @@ void keyboard_handler() {
         line++;
         if (line >= ROWS) line = 0;
         cursor = line * COLS * 2;
-        clear_line(line); // خط جدید را پاک کن
+        // پاک کردن خط بعدی اختیاری است، در صورت نیاز فعال کنید:
+        // clear_line(line);
     } else if (c == '\b') {
         if (buffer_index > 0 && cursor >= 2) {
             buffer_index--;
             cursor -= 2;
-            if (cursor < VIDEO_SIZE - 1) { // جلوگیری از خارج شدن
+            if (cursor < VIDEO_SIZE - 1) {
                 VIDEO_MEMORY[cursor] = ' ';
                 VIDEO_MEMORY[cursor + 1] = 0x07;
             }
         }
     } else if (c >= 32 && c <= 126) { // فقط کاراکترهای قابل نمایش
-        if (buffer_index < INPUT_BUF_SIZE - 1 && cursor < VIDEO_SIZE - 2) {
-            input_buffer[buffer_index++] = c;
-            if (cursor < VIDEO_SIZE - 1) {
-                VIDEO_MEMORY[cursor++] = c;
-                VIDEO_MEMORY[cursor++] = 0x07;
-            }
-        }
-    }
-
-    //*
+        if (buffer_index < INPUT_BUF_SIZE - 1 && cursor < VIDEO_SIZE*
 

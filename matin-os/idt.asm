@@ -1,3 +1,4 @@
+; idt.asm
 [BITS 32]
 
 global load_idt
@@ -13,4 +14,3 @@ irq1_handler:
     call keyboard_handler
     popa
     iretd
-

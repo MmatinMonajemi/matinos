@@ -18,6 +18,12 @@ void read_input(char* buffer) {
     if (fgets(buffer, MAX_INPUT, stdin) != NULL) {
         // حذف '\n' انتهای خط
         buffer[strcspn(buffer, "\n")] = 0;
+
+        // اگر ورودی بیشتر از اندازه مجاز بود، پاک‌سازی باقی‌مانده
+        if (strlen(buffer) == MAX_INPUT - 1 && buffer[MAX_INPUT-2] != '\n') {
+            int ch;
+            while ((ch = getchar()) != '\n' && ch != EOF);
+        }
     } else {
         buffer[0] = 0;
     }
@@ -31,7 +37,6 @@ int main() {
 
     while (1) {
         read_input(input);
-        input[MAX_INPUT - 1] = 0;
 
         if (input[0] == 0) continue;
 
@@ -41,7 +46,10 @@ int main() {
             clear_screen();
             print("> ");
         } else if (strncmp(input, "echo ", 5) == 0) {
-            print(input + 5);
+            if(strlen(input + 5) > 0)
+                print(input + 5);
+            print("\n> ");
+        } else if (strcmp(input, "echo") == 0) {
             print("\n> ");
         } else if (strcmp(input, "exit") == 0) {
             print("Bye!\n");

@@ -1,12 +1,11 @@
-// kernel.c
 #include <stdint.h>
 #include <string.h>
 
 #define VIDEO_MEMORY ((char*)0xb8000)
-#define MAX_INPUT 80
+#define MAX_INPUT 128
 
 extern void init_idt();
-extern char input_buffer[80];
+extern char input_buffer[];
 
 void print(const char* str);
 void clear_screen();
@@ -27,13 +26,16 @@ void main() {
         if (input[0] == 0) continue;
 
         if (strcmp(input, "help") == 0) {
-            print("Available commands:\nhelp\nclear\necho [text]\n\n> ");
+            print("Commands:\nhelp\nclear\necho [text]\nexit\n\n> ");
         } else if (strcmp(input, "clear") == 0) {
             clear_screen();
             print("> ");
         } else if (strncmp(input, "echo ", 5) == 0) {
             print(input + 5);
             print("\n> ");
+        } else if (strcmp(input, "exit") == 0) {
+            print("Bye!\n");
+            while(1) __asm__("hlt");
         } else {
             print("Unknown command\n> ");
         }

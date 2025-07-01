@@ -15,7 +15,7 @@ start:
     call print
 
     mov ah, 0x02
-    mov al, 4           
+    mov al, 4
     mov ch, 0
     mov cl, 2
     mov dh, 0
@@ -32,7 +32,7 @@ start:
     or eax, 1
     mov cr0, eax
 
-    jmp 0x08:init_pm      ; bayad dar kernel basheh
+    jmp 0x08:0x1000    ; پرش به ابتدای کرنل در حالت محافظت‌شده
 
 load_error:
     mov si, err_msg
@@ -57,7 +57,7 @@ gdt_start:
 gdt_end:
 
 gdt_descriptor:
-    dw gdt_end - gdt_start -1
+    dw gdt_end - gdt_start - 1
     dd gdt_start
 
 BOOT_DRIVE db 0
@@ -65,8 +65,5 @@ BOOT_DRIVE db 0
 msg db "Booting Matin OS in Protected Mode...\r\n", 0
 err_msg db "Error loading kernel!", 0
 
-CODE_SEG equ 0x08
-DATA_SEG equ 0x10
-
-times 510 - ($-$$) db 0
+times 510 - ($ - $$) db 0
 dw 0xAA55

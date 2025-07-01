@@ -27,8 +27,8 @@ void main() {
 
         if (input[0] == 0) continue;
 
-        // جلوگیری از overflow و پاک‌سازی مطمئن
-        input[MAX_INPUT-1] = 0;
+        // جلوگیری از overflow
+        input[MAX_INPUT - 1] = 0;
 
         if (strcmp(input, "help") == 0) {
             print("Commands:\nhelp\nclear\necho [text]\nexit\n\n> ");
@@ -40,7 +40,7 @@ void main() {
             print("\n> ");
         } else if (strcmp(input, "exit") == 0) {
             print("Bye!\n");
-            while(1) __asm__("hlt");
+            for (;;) __asm__("hlt");
         } else {
             print("Unknown command\n> ");
         }
@@ -85,13 +85,13 @@ void read_input(char* buffer) {
     // جلوگیری از گیر کردن در حلقه بی‌نهایت
     while (input_buffer[0] == 0);
 
-    for (int i = 0; i < MAX_INPUT - 1; i++) {
+    int i;
+    for (i = 0; i < MAX_INPUT - 1; i++) {
         buffer[i] = input_buffer[i];
         if (input_buffer[i] == 0) {
-            buffer[i] = 0;
             break;
         }
     }
-    buffer[MAX_INPUT-1] = 0; // اطمینان از تهی بودن انتها
+    buffer[i] = 0; // تضمین تهی بودن انتها
     input_buffer[0] = 0;
 }

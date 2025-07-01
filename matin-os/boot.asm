@@ -1,4 +1,3 @@
-; boot.asm
 [BITS 16]
 ORG 0x7C00
 
@@ -16,7 +15,7 @@ start:
     call print
 
     mov ah, 0x02
-    mov al, 1
+    mov al, 4           ; بارگذاری 4 سکتور (kernel رو بزرگتر کنیم)
     mov ch, 0
     mov cl, 2
     mov dh, 0
@@ -63,11 +62,11 @@ gdt_descriptor:
 
 BOOT_DRIVE db 0
 
-msg db "Booting Matin OS in Protected Mode...", 0
+msg db "Booting Matin OS in Protected Mode...\r\n", 0
 err_msg db "Error loading kernel!", 0
 
 CODE_SEG equ 0x08
 DATA_SEG equ 0x10
 
-times 510-($-$$) db 0
+times 510 - ($-$$) db 0
 dw 0xAA55

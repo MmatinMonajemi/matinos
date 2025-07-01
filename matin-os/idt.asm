@@ -1,4 +1,3 @@
-; idt.asm
 [BITS 32]
 
 global load_idt

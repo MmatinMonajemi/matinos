@@ -32,7 +32,7 @@ start:
     or eax, 1
     mov cr0, eax
 
-    jmp 0x08:init_pm      ; برچسب init_pm باید در کرنل وجود داشته باشد!
+    jmp 0x08:init_pm      ; bayad dar kernel basheh
 
 load_error:
     mov si, err_msg

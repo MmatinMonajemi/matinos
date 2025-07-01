@@ -94,6 +94,7 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    jmp 0x10000      ; پرش به کرنل که در 0x10000 بارگذاری شد
+    ; پرش صحیح به آدرس کرنل (0x10000:0x0)
+    jmp dword 0x10000
 
     jmp $

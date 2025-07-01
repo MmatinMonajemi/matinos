@@ -9,38 +9,45 @@ start:
     mov ss, ax
     mov sp, 0x7C00
 
-    mov [BOOT_DRIVE], dl
+    mov [boot_drive], dl
 
+    ; پیام به صفحه
     mov si, msg
     call print
 
-    ; Load 4 sectors (sector 2 to 5) at 0x10000
-    mov si, 0              ; sector index
-.load_loop:
-    mov ah, 0x02           ; read sectors
-    mov al, 1              ; sectors to read
-    mov ch, 0
+    ; بارگذاری 4 سکتور (سکتور 2 تا 5) در 0x1000:0x0000 (آدرس فیزیکی 0x10000)
+    mov si, 0
+
+load_loop:
+    mov ah, 0x02        ; خواندن سکتور
+    mov al, 1           ; تعداد سکتورها = 1
+    mov ch, 0           ; سیلندر 0
     mov cl, 2
-    add cl, si
-    mov dh, 0
-    mov dl, [BOOT_DRIVE]
+    add cl, si          ; سکتور 2 + si
+    mov dh, 0           ; هد 0
+    mov dl, [boot_drive]
     mov bx, 0x0000
-    mov ax, 0x1000         ; segment = 0x1000  (0x10000 = 0x1000 << 4)
+    mov ax, 0x1000      ; segment 0x1000 = آدرس 0x10000
     mov es, ax
     int 0x13
     jc load_error
+
     inc si
     cmp si, 4
-    jl .load_loop
+    jl load_loop
 
+    ; آماده‌سازی GDT و ورود به حالت محافظت‌شده
     lgdt [gdt_descriptor]
     call enable_a20
+    cli
 
+    ; فعال کردن حالت محافظت‌شده
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
-    jmp 0x08:protected_mode
+    ; پرش به کد 32 بیت
+    jmp CODE_SEG:protected_mode
 
 load_error:
     mov si, err_msg
@@ -61,9 +68,9 @@ print:
     ret
 
 enable_a20:
-    in   al, 0x92
-    or   al, 2
-    out  0x92, al
+    in al, 0x92
+    or al, 2
+    out 0x92, al
     ret
 
 gdt_start:
@@ -76,14 +83,13 @@ gdt_descriptor:
     dw gdt_end - gdt_start - 1
     dd gdt_start
 
-BOOT_DRIVE db 0
-msg db "Booting OS...\r\n", 0
+boot_drive db 0
+
+msg db "Booting Matin OS...\r\n", 0
 err_msg db "Error loading kernel!", 0
 
-CODE_SEG equ 0x08
-DATA_SEG equ 0x10
-
-times 510 - ($-$$) db 0
+; پد کردن سکتور بوت تا 512 بایت
+times 510 - ($ - $$) db 0
 dw 0xAA55
 
 [BITS 32]
@@ -96,7 +102,10 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    ; Jump to kernel at 0x10000:0x0
-    jmp 0x08:0x00010000
+    ; پرش به کرنل اصلی در 0x10000:0x0 (kernel.bin)
+    jmp 0x08:0x00000000
 
     jmp $
+
+CODE_SEG equ 0x08
+DATA_SEG equ 0x10

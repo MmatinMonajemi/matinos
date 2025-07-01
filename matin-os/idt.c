@@ -19,9 +19,9 @@ extern void irq1_handler(void);
 extern void default_handler(void);
 
 #define IDT_SIZE 256
-struct IDTEntry idt[IDT_SIZE];
+volatile struct IDTEntry idt[IDT_SIZE];
 
-void remap_pic() {
+void remap_pic(void) {
     outb(0x20, 0x11);
     outb(0xA0, 0x11);
     outb(0x21, 0x20);
@@ -43,7 +43,7 @@ void set_idt_entry(int n, void (*handler)(void)) {
     idt[n].offset_high = (addr >> 16) & 0xFFFF;
 }
 
-void init_idt() {
+void init_idt(void) {
     remap_pic();
 
     for (int i = 0; i < IDT_SIZE; i++) {
@@ -53,7 +53,7 @@ void init_idt() {
     set_idt_entry(0x21, irq1_handler);
 
     struct IDTPointer idtp;
-    idtp.limit = sizeof(struct IDTEntry) * IDT_SIZE - 1;
+    idtp.limit = (uint16_t)(sizeof(struct IDTEntry) * IDT_SIZE - 1);
     idtp.base = (uint32_t)(uintptr_t)&idt;
     load_idt(&idtp);
 }

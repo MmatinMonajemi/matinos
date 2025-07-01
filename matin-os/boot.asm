@@ -14,7 +14,7 @@ start:
     mov si, msg
     call print
 
-    ; بارگذاری 4 سکتور (از سکتور 2 تا 5) در 0x10000
+    ; Load 4 sectors (sector 2 to 5) at 0x10000
     mov si, 0              ; sector index
 .load_loop:
     mov ah, 0x02           ; read sectors
@@ -33,19 +33,14 @@ start:
     cmp si, 4
     jl .load_loop
 
-    ; فعال کردن A20
+    lgdt [gdt_descriptor]
     call enable_a20
 
-    ; بارگذاری GDT
-    lgdt [gdt_descriptor]
-
-    ; فعال کردن Protected Mode
     mov eax, cr0
     or eax, 1
     mov cr0, eax
 
-    ; پرش به کد حالت محافظتی
-    jmp CODE_SEG:protected_mode
+    jmp 0x08:protected_mode
 
 load_error:
     mov si, err_msg
@@ -66,15 +61,15 @@ print:
     ret
 
 enable_a20:
-    in al, 0x92
-    or al, 2
-    out 0x92, al
+    in   al, 0x92
+    or   al, 2
+    out  0x92, al
     ret
 
 gdt_start:
-    dq 0x0000000000000000               ; Null descriptor
-    dq 0x00CF9A000000FFFF               ; Code segment descriptor
-    dq 0x00CF92000000FFFF               ; Data segment descriptor
+    dq 0x0000000000000000
+    dq 0x00CF9A000000FFFF
+    dq 0x00CF92000000FFFF
 gdt_end:
 
 gdt_descriptor:
@@ -82,7 +77,7 @@ gdt_descriptor:
     dd gdt_start
 
 BOOT_DRIVE db 0
-msg db "Booting Matin OS in Protected Mode...\r\n", 0
+msg db "Booting OS...\r\n", 0
 err_msg db "Error loading kernel!", 0
 
 CODE_SEG equ 0x08
@@ -91,10 +86,8 @@ DATA_SEG equ 0x10
 times 510 - ($-$$) db 0
 dw 0xAA55
 
-
 [BITS 32]
 protected_mode:
-    cli
     mov ax, DATA_SEG
     mov ds, ax
     mov es, ax
@@ -103,8 +96,7 @@ protected_mode:
     mov ss, ax
     mov esp, 0x9FC00
 
-    mov eax, 0x10000         ; آدرس شروع کرنل در حافظه فیزیکی
-    jmp eax                  ; پرش به کرنل
+    ; Jump to kernel at 0x10000:0x0
+    jmp 0x08:0x00010000
 
-    hlt
     jmp $

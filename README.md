@@ -30,3 +30,5 @@ boot.asm     # Bootloader (Assembly)
 kernel.c     # Simple kernel (C)
 linker.ld    # Linker script
 Makefile     # Build automation
+For Test Use This :
+qemu-system-x86_64 -drive format=raw,file=boot.bin

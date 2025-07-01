@@ -11,6 +11,9 @@ void print(const char* str);
 void clear_screen();
 void read_input(char* buffer);
 
+// 
+static int row = 0, col = 0;
+
 void main() {
     char input[MAX_INPUT];
 
@@ -43,7 +46,6 @@ void main() {
 }
 
 void print(const char* str) {
-    static int row = 0, col = 0;
     char* video = VIDEO_MEMORY;
 
     while (*str) {
@@ -51,6 +53,9 @@ void print(const char* str) {
             row++;
             col = 0;
         } else {
+            if (row >= 25) { // 
+                clear_screen();
+            }
             int pos = (row * 80 + col) * 2;
             video[pos] = *str;
             video[pos + 1] = 0x07;
@@ -70,6 +75,8 @@ void clear_screen() {
         video[i] = ' ';
         video[i + 1] = 0x07;
     }
+    row = 0; // 
+    col = 0;
 }
 
 void read_input(char* buffer) {
